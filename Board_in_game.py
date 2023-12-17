@@ -3,7 +3,7 @@ import pygame
 import class_Main_building
 import class_all_objects
 import class_random_resurs_in_map
-
+import class_resurs_gold
 
 class Board:
     # создание поля
@@ -31,9 +31,10 @@ class Board:
                     self.left + self.cell_size * col, self.top + self.cell_size * row, self.cell_size, self.cell_size),
                                  1)
 
-    def get_click(self, mouse_pos):
-        cell = self.get_cell(mouse_pos)
+    def get_click(self, mouse_pos, type_object):
+        cell = self.get_cell(mouse_pos, type_object)
         self.on_click(cell)
+        pygame.draw.rect(self.screen_1, 'red', (cell[0] * 40,  cell[1] * 40, 40, 40), 5)
 
     def get_cell(self, mouse_pos, type_object='None_object'):
         x = mouse_pos[0] - self.left
@@ -46,13 +47,56 @@ class Board:
             return None
         type_object = class_all_objects.Object(col, row, self.screen_1)
         self.parametrs = f'opportunities = {None}'
+
         if (col == 0 and row == 0) or (col + 1 == self.width and row + 1 == self.height):
-            self.parametrs = f'hp={100}, opportunities={None}'
+            all_resyrs = [('gold', 0), ('wood', 0), ('iron', 0)]
+            self.parametrs = f'hp={100}, opportunities={None}, resurs_players={all_resyrs}'
             type_object = class_Main_building.Main_building(col, row, self.screen_1, self.parametrs)
-        elif 15 > col > 4 and 15 > row > 5:
+
+        elif 19 > col > 1 and 19 > row > 1:
             Player = None
             self.parametrs = f'Affiliation_to_player={Player},type_resurs={None}, opportunities={None}'
-            type_object = class_random_resurs_in_map.resurs(col, row, self.screen_1, self.parametrs)
+            old_data = (open('map_game', 'r')).readlines()
+            if (old_data[row][col]) == '.':
+                mode_str = old_data[row]
+                old_data[row] = (mode_str[:col] + 'g' + mode_str[col+1:len(mode_str)])
+                new_data = old_data
+                print(new_data)
+                file = open('map_game', 'w')
+                for elem in new_data:
+                    file.write(elem)
+                type_object = class_random_resurs_in_map.resurs(col, row, self.screen_1, self.parametrs)
+            elif (old_data[row][col]) == 'g':
+                mode_str = old_data[row]
+                old_data[row] = (mode_str[:col] + 'w' + mode_str[col+1:len(mode_str)])
+                new_data = old_data
+                print(new_data)
+                file = open('map_game', 'w')
+                for elem in new_data:
+                    file.write(elem)
+                type_object = class_resurs_gold.resurs_gold(col, row, self.screen_1, self.parametrs)
+            elif (old_data[row][col]) == 'w':
+                mode_str = old_data[row]
+                old_data[row] = (mode_str[:col] + 'i' + mode_str[col+1:len(mode_str)])
+                new_data = old_data
+                print(new_data)
+                file = open('map_game', 'w')
+                for elem in new_data:
+                    file.write(elem)
+                type_object = class_resurs_gold.resurs_gold(col, row, self.screen_1, self.parametrs)
+            elif (old_data[row][col]) == 'i':
+                mode_str = old_data[row]
+                old_data[row] = (mode_str[:col] + '.' + mode_str[col+1:len(mode_str)])
+                new_data = old_data
+                print(new_data)
+                file = open('map_game', 'w')
+                for elem in new_data:
+                    file.write(elem)
+                type_object = class_resurs_gold.resurs_gold(col, row, self.screen_1, self.parametrs)
+
+
+
+
         return (col, row, type_object, self.parametrs)
 
     def on_click(self, cell_coords):
