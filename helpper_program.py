@@ -17,7 +17,7 @@ def drow_map():
         elem[random.randrange(0, 30)] = 'w'
 
     print()
-    L[0] = (('@' + ' ') + ('.' + ' ') * 29).split()
+    L[0] = (('@' + ' ' + 'U') + ('.' + ' ') * 28).split()
     L[19] = (('.' + ' ') * 29 + ('@' + ' ')).split()
 
     file = open('map_game', 'w')

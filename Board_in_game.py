@@ -1,9 +1,37 @@
-import pygame
-import helpper_program
+from PyQt5.QtWidgets import QDialog
+
 import class_Main_building
-import class_all_objects
 import class_random_resurs_in_map
 import class_resurs_gold
+import class_unit_all
+from class_unit_all import *
+from unit_window import *
+
+global screen
+
+def create_win(tit, ui):
+    app = QApplication(sys.argv)
+    application = MyWidget_1('gg', '01.ui')
+    application.show()
+    app.exec_()
+
+class MyWidget_1(QDialog):
+    def __init__(self, tit, ui):
+        super().__init__()
+        self.setWindowTitle('Give the order my lord')
+        uic.loadUi(ui, self)
+        self.button_bathe.clicked.connect(self.bathe)
+        self.fight_button.clicked.connect(self.fight)
+        self.move_button.clicked.connect(self.move_1)
+
+    def move_1(self):
+        self.close()
+
+    def fight(self):
+        self.close()
+
+    def bathe(self):
+        self.close()
 
 
 class Board:
@@ -49,15 +77,21 @@ class Board:
         type_object = class_all_objects.Object(col, row, self.screen_1)
         self.parametrs = f'opportunities = {None}'
 
+        old_data = (open('map_game', 'r')).readlines()
+
         if (col == 0 and row == 0) or (col + 1 == self.width and row + 1 == self.height):
             all_resyrs = [('gold', 0), ('wood', 0), ('iron', 0)]
             self.parametrs = f'hp={100}, opportunities={None}, resurs_players={all_resyrs}'
             type_object = class_Main_building.Main_building(col, row, self.screen_1, self.parametrs)
 
+        elif str(old_data[row])[col] == 'U':
+            create_win('gg', '01.ui')
+
+            type_object = class_unit_all.unit(col, row, self.screen_1, self.parametrs)
+
         elif (col != 0 and row != 0) or (col + 1 != self.width and row + 1 != self.height):
             Player = None
             self.parametrs = f'Affiliation_to_player={Player},type_resurs={None}, opportunities={None}'
-            helpper_program.drow_map()
             old_data = (open('map_game', 'r')).readlines()
             if (old_data[row][col]) == '.':
                 type_object = class_random_resurs_in_map.resurs(col, row, self.screen_1, self.parametrs)
@@ -68,16 +102,8 @@ class Board:
             elif (old_data[row][col]) == 'i':
                 type_object = class_resurs_gold.resurs_gold(col, row, self.screen_1, self.parametrs)
             print(old_data)
+
         return col, row, type_object, self.parametrs
 
     def on_click(self, cell_coords):
         print(cell_coords)
-
-# if (old_data[row][col]) == '.':
-#     mode_str = old_data[row]
-#     old_data[row] = (mode_str[:col] + 'g' + mode_str[col + 1:len(mode_str)])
-#     new_data = old_data
-#     print(new_data)
-#     file = open('map_game', 'w')
-#     for elem in new_data:
-#         file.write(elem)
