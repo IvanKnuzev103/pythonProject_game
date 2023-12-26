@@ -1,11 +1,16 @@
 from Board_in_game import *
+import os
 
+x = 200
+y = 100
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y)
 pygame.init()
 pygame.display.set_caption('Жёлтый круг')
 size = width, height = 1200, 800
 screen = pygame.display.set_mode(size)
-board = Board(int(width / 40), int(height / 40), screen)
-board.set_view(0, 0, 40)
+n = 40
+board = Board(int(width / n), int(height / n), screen)
+board.set_view(0, 0, n)
 
 
 def start():
@@ -18,7 +23,7 @@ def start():
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     screen.fill((0, 0, 0))
-                    board.get_click(event.pos, None)
+                    board.get_click(event.pos, None, n)
                     board.render(screen)
             # screen.fill((0, 0, 0))
             board.render(screen)

@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QDialog
+import sys
+
+from PyQt5.QtWidgets import QApplication
 
 import class_Main_building
 import class_random_resurs_in_map
@@ -6,32 +8,17 @@ import class_resurs_gold
 import class_unit_all
 from class_unit_all import *
 from unit_window import *
+from unit_window import *
 
 global screen
 
-def create_win(tit, ui):
+
+def create_win(tit, ui, par, pos):
     app = QApplication(sys.argv)
-    application = MyWidget_1('gg', '01.ui')
+    application = MyWidget_1('gg', '01.ui', par, pos)
     application.show()
     app.exec_()
-
-class MyWidget_1(QDialog):
-    def __init__(self, tit, ui):
-        super().__init__()
-        self.setWindowTitle('Give the order my lord')
-        uic.loadUi(ui, self)
-        self.button_bathe.clicked.connect(self.bathe)
-        self.fight_button.clicked.connect(self.fight)
-        self.move_button.clicked.connect(self.move_1)
-
-    def move_1(self):
-        self.close()
-
-    def fight(self):
-        self.close()
-
-    def bathe(self):
-        self.close()
+    return par
 
 
 class Board:
@@ -60,10 +47,10 @@ class Board:
                     self.left + self.cell_size * col, self.top + self.cell_size * row, self.cell_size, self.cell_size),
                                  1)
 
-    def get_click(self, mouse_pos, type_object):
+    def get_click(self, mouse_pos, type_object, n):
         cell = self.get_cell(mouse_pos, type_object)
         self.on_click(cell)
-        pygame.draw.rect(self.screen_1, 'red', (cell[0] * 40, cell[1] * 40, 40, 40), 5)
+        pygame.draw.rect(self.screen_1, 'red', (cell[0] * n, cell[1] * n, n, n), 5)
 
     def get_cell(self, mouse_pos, type_object='None_object'):
         x = mouse_pos[0] - self.left
@@ -85,24 +72,29 @@ class Board:
             type_object = class_Main_building.Main_building(col, row, self.screen_1, self.parametrs)
 
         elif str(old_data[row])[col] == 'U':
-            create_win('gg', '01.ui')
-
+            Player = 'left'
+            bathe = 'no'
+            self.parametrs = [('hp', 10),  ('opportunities', Player), ('dmg', 10), ('bathe', bathe)]
             type_object = class_unit_all.unit(col, row, self.screen_1, self.parametrs)
+            create_win('gg', '01.ui', self.parametrs, (col, row))
+
+        elif (old_data[row][col]) == '.':
+            self.parametrs = None
+            type_object = class_random_resurs_in_map.resurs(col, row, self.screen_1, self.parametrs)
+
 
         elif (col != 0 and row != 0) or (col + 1 != self.width and row + 1 != self.height):
             Player = None
             self.parametrs = f'Affiliation_to_player={Player},type_resurs={None}, opportunities={None}'
             old_data = (open('map_game', 'r')).readlines()
-            if (old_data[row][col]) == '.':
-                type_object = class_random_resurs_in_map.resurs(col, row, self.screen_1, self.parametrs)
-            elif (old_data[row][col]) == 'g':
+            if (old_data[row][col]) == 'g':
                 type_object = class_resurs_gold.resurs_gold(col, row, self.screen_1, self.parametrs)
             elif (old_data[row][col]) == 'w':
                 type_object = class_resurs_gold.resurs_gold(col, row, self.screen_1, self.parametrs)
             elif (old_data[row][col]) == 'i':
                 type_object = class_resurs_gold.resurs_gold(col, row, self.screen_1, self.parametrs)
-            print(old_data)
 
+        print(old_data)
         return col, row, type_object, self.parametrs
 
     def on_click(self, cell_coords):
