@@ -1,6 +1,8 @@
 import sys
 
 from PyQt5.QtWidgets import QApplication
+from const import *
+from start_screen import start_screen
 
 import class_Main_building
 import class_random_resurs_in_map
@@ -19,6 +21,11 @@ def create_win(tit, ui, par, pos):
     application.show()
     app.exec_()
     return par
+
+
+def terminate():
+    pygame.quit()
+    sys.exit()
 
 
 class Board:
@@ -74,7 +81,7 @@ class Board:
         elif str(old_data[row])[col] == 'U':
             Player = 'left'
             bathe = 'no'
-            self.parametrs = [('hp', 10),  ('opportunities', Player), ('dmg', 10), ('bathe', bathe)]
+            self.parametrs = [('hp', 10), ('opportunities', Player), ('dmg', 10), ('bathe', bathe)]
             type_object = class_unit_all.unit(col, row, self.screen_1, self.parametrs)
             create_win('gg', '01.ui', self.parametrs, (col, row))
 
@@ -99,3 +106,14 @@ class Board:
 
     def on_click(self, cell_coords):
         print(cell_coords)
+
+
+if __name__ == '__main__':
+    pygame.init()
+    size = WIDTH, HEIGHT
+    screen = pygame.display.set_mode(size)
+    running = True
+    clock = pygame.time.Clock()
+    if start_screen(screen):
+        terminate()
+    pygame.quit()
