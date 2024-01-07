@@ -11,8 +11,10 @@ from class_random_resurs_in_map import clear
 import class_resurs_gold
 import class_unit_all
 from class_unit_all import *
+from const import elements
 
 global screen
+
 
 def go(sc, pos, n):
     old_data = (open('map_game', 'r')).readlines()
@@ -29,6 +31,7 @@ def go(sc, pos, n):
         x, y = pygame.mouse.get_pos()
         pygame.draw.rect(sc, 'red', ((x // 50 * 50), (y // 50 * 50), 50, 50), 20)
 
+
 def control(sc, pos, n):
     old_data = (open('map_game', 'r')).readlines()
     x, y = pygame.mouse.get_pos()
@@ -42,6 +45,7 @@ def control(sc, pos, n):
     else:
         x, y = pygame.mouse.get_pos()
         pygame.draw.rect(sc, 'red', ((x // 50 * 50), (y // 50 * 50), 50, 50), 20)
+
 
 class MyWidget_1(QDialog):
     def __init__(self, tit, ui, par, pos, screen_2, n):
@@ -58,7 +62,6 @@ class MyWidget_1(QDialog):
 
     def control(self):
         self.close()
-
 
     def bathe(self, n):
         self.close()
@@ -102,49 +105,9 @@ class Board:
                     self.left + self.cell_size * col, self.top + self.cell_size * row, self.cell_size, self.cell_size),
                                  1)
         for i in range(len(data)):
-            for j in range(len(data[i])):
-                if data[i][j] == '.':
-                    img = pygame.image.load('foto/img1.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == '@':
-                    img = pygame.image.load('foto/right_plpng.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == '#':
-                    img = pygame.image.load('foto/left_pl.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'w':
-                    img = pygame.image.load('foto/wood_neitral.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'd':
-                    img = pygame.image.load('foto/wood_left.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'D':
-                    img = pygame.image.load('foto/wood_right.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'i':
-                    img = pygame.image.load('foto/iron_n.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'm':
-                    img = pygame.image.load('foto/iron_left.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'M':
-                    img = pygame.image.load('foto/iron_right.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'g':
-                    img = pygame.image.load('foto/gold_n.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'z':
-                    img = pygame.image.load('foto/gold_l.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'Z':
-                    img = pygame.image.load('foto/gold_r.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'U':
-                    img = pygame.image.load('foto/u_l.png')
-                    screen.blit(img, (j * 50, i * 50))
-                elif data[i][j] == 'u':
-                    img = pygame.image.load('foto/u_r.png')
-                    screen.blit(img, (j * 50, i * 50))
+            for j in range(len(data[i]) - 1):
+                print(data[i][j])
+                screen.blit(elements[data[i][j]], (j * 50, i * 50))
 
     def get_click(self, mouse_pos, type_object, n):
         cell = self.get_cell(mouse_pos, type_object, n)
