@@ -5,14 +5,15 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QDialog
 
 import class_Main_building
+import class_resurs_gold
 import class_resurs_iron
 import class_resurs_wood
-from class_random_resurs_in_map import clear
-import class_resurs_gold
 import class_unit_all
+from class_random_resurs_in_map import clear
 from class_unit_all import *
 
 global screen
+
 
 def go(sc, pos, n):
     old_data = (open('map_game', 'r')).readlines()
@@ -20,7 +21,8 @@ def go(sc, pos, n):
     if (old_data[y // 50][x // 50]) == '.' and (pos[0] + 2 >= x // 50 >= pos[0] - 2) and (
             pos[1] + 2 >= y // 50 >= pos[1] - 2):
         pygame.draw.rect(sc, 'green', ((x // 50 * 50), (y // 50 * 50), 50, 50), 5)
-        old_data[y // 50] = ((old_data[y // 50])[:x // 50] + 'U' + old_data[y // 50][x // 50 + 1:])
+        old_data[y // 50] = (
+                (old_data[y // 50])[:x // 50] + str((old_data[pos[1]])[pos[0]]) + old_data[y // 50][x // 50 + 1:])
         old_data[pos[1]] = ((old_data[pos[1]])[:pos[0]] + '.' + old_data[pos[1]][pos[0] + 1:])
         new_data = open('map_game', 'w')
         for elem in old_data:
@@ -29,19 +31,35 @@ def go(sc, pos, n):
         x, y = pygame.mouse.get_pos()
         pygame.draw.rect(sc, 'red', ((x // 50 * 50), (y // 50 * 50), 50, 50), 20)
 
-def control(sc, pos, n):
+
+def con(sc, pos, n, par):
     old_data = (open('map_game', 'r')).readlines()
+    A = {'M': 'm', 'i': 'm', 'g': 'z', 'Z': 'z', 'w': 'd', 'D': 'd'}
+    B = {'m': 'M', 'i': 'M', 'g': 'Z', 'z': 'Z', 'w': 'D', 'd': 'D'}
     x, y = pygame.mouse.get_pos()
-    if (old_data[y // 50][x // 50]) == '.' and (pos[0] + 2 >= x // 50 >= pos[0] - 2) and (
+
+    if (old_data[y // 50][x // 50] != '.' and (old_data[y // 50][x // 50]) != '@' and (
+            old_data[y // 50][x // 50]) != '#' and (old_data[y // 50][x // 50]) != 'u' and (
+                old_data[y // 50][x // 50]) != '@' and (old_data[y // 50][x // 50]) != 'U') and (
+            pos[0] + 2 >= x // 50 >= pos[0] - 2) and (
             pos[1] + 2 >= y // 50 >= pos[1] - 2):
-        old_data[y // 50] = ((old_data[y // 50])[:x // 50] + 'U' + old_data[y // 50][x // 50 + 1:])
-        old_data[pos[1]] = ((old_data[pos[1]])[:pos[0]] + '.' + old_data[pos[1]][pos[0] + 1:])
-        new_data = open('map_game', 'w')
-        for elem in old_data:
-            new_data.write(elem)
+        if par[1][1] == 'left' and old_data[y // 50][x // 50] != 'z' and old_data[y // 50][x // 50] != 'd' and \
+                old_data[y // 50][x // 50] != 'm':
+            old_data[y // 50] = str(old_data[y // 50])[:x // 50] + A[old_data[y // 50][x // 50]] + old_data[y // 50][
+                                                                                                   x // 50 + 1:]
+            new_data = open('map_game', 'w')
+            for elem in old_data:
+                new_data.write(elem)
+        elif par[1][1] == 'right' and old_data[y // 50][x // 50] != 'Z' and old_data[y // 50][x // 50] != 'D' and \
+                old_data[y // 50][x // 50] != 'M':
+            old_data[y // 50] = str(old_data[y // 50])[:x // 50] + B[old_data[y // 50][x // 50]] + old_data[y // 50][
+                                                                                                   x // 50 + 1:]
+            new_data = open('map_game', 'w')
+            for elem in old_data:
+                new_data.write(elem)
     else:
-        x, y = pygame.mouse.get_pos()
-        pygame.draw.rect(sc, 'red', ((x // 50 * 50), (y // 50 * 50), 50, 50), 20)
+        pass
+
 
 class MyWidget_1(QDialog):
     def __init__(self, tit, ui, par, pos, screen_2, n):
@@ -49,16 +67,16 @@ class MyWidget_1(QDialog):
         self.setWindowTitle('Give the order my lord')
         uic.loadUi(ui, self)
         self.button_bathe.clicked.connect(lambda: self.bathe(par))
-        self.fight_button.clicked.connect(lambda: self.control(pos, screen_2, n))
+        self.fight_button.clicked.connect(lambda: self.control(pos, screen_2, n, par))
         self.move_button.clicked.connect(lambda: self.move_1(pos, screen_2, n))
 
     def move_1(self, pos, screen_2, n):
         self.close()
         return go(screen_2, pos, n)
 
-    def control(self):
+    def control(self, pos, screen_2, n, par):
         self.close()
-
+        return con(screen_2, pos, n, par)
 
     def bathe(self, n):
         self.close()
@@ -70,6 +88,7 @@ def create_win(tit, ui, par, pos, screen, n):
     app = QApplication(sys.argv)
     application = MyWidget_1('gg', '01.ui', par, pos, screen, n)
     application.show()
+    application.move(pos[0] * 50 - 80, pos[1] * 50 + 50)
     app.exec_()
     return par
 
@@ -169,13 +188,19 @@ class Board:
             self.parametrs = f'hp={100}, opportunities={None}, resurs_players={all_resyrs}'
             type_object = class_Main_building.Main_building(col, row, self.screen_1, self.parametrs)
 
-        elif str(old_data[row])[col] == 'U' or str(old_data[row])[col] == 'u':
+        elif str(old_data[row])[col] == 'U':
             Player = 'left'
             bathe = 'no'
             self.parametrs = [('hp', 10), ('opportunities', Player), ('dmg', 10), ('bathe', bathe)]
             type_object = class_unit_all.unit(col, row, self.screen_1, self.parametrs)
             create_win('gg', '01.ui', self.parametrs, (col, row), self.screen_1, n_1)
 
+        elif str(old_data[row])[col] == 'u':
+            Player = 'right'
+            bathe = 'no'
+            self.parametrs = [('hp', 10), ('opportunities', Player), ('dmg', 10), ('bathe', bathe)]
+            type_object = class_unit_all.unit(col, row, self.screen_1, self.parametrs)
+            create_win('gg', '01.ui', self.parametrs, (col, row), self.screen_1, n_1)
 
         elif (old_data[row][col]) == '.':
             self.parametrs = None
