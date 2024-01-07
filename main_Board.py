@@ -1,14 +1,16 @@
+
 from Board_in_game import *
+
 import os
 
-x = 200
-y = 100
+x = 20
+y = 10
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y)
 pygame.init()
-pygame.display.set_caption('Жёлтый круг')
-size = width, height = 1200, 800
+pygame.display.set_caption('KING_FIGHT')
+size = width, height = 1500, 1000
 screen = pygame.display.set_mode(size)
-n = 40
+n = 50
 board = Board(int(width / n), int(height / n), screen)
 board.set_view(0, 0, n)
 
