@@ -11,6 +11,7 @@ import class_resurs_wood
 import class_unit_all
 from class_random_resurs_in_map import clear
 from class_unit_all import *
+from const import elements
 
 global screen
 
@@ -42,14 +43,14 @@ def control(pos, par, sc, n):
             old_data[y // 50][x // 50]) != 'u' and (old_data[y // 50][x // 50]) != '.' and (
             pos[0] + 2 >= x // 50 >= pos[0] - 2) and (
             pos[1] + 2 >= y // 50 >= pos[1] - 2):
-        if par[1][1] == 'left'  and (
-            old_data[y // 50][x // 50]) != 'd' and (old_data[y // 50][x // 50]) != 'z' and (
-            old_data[y // 50][x // 50]) != 'm':
+        if par[1][1] == 'left' and (
+                old_data[y // 50][x // 50]) != 'd' and (old_data[y // 50][x // 50]) != 'z' and (
+                old_data[y // 50][x // 50]) != 'm':
             old_data[y // 50] = old_data[y // 50][:x // 50] + A[old_data[y // 50][x // 50]] + old_data[y // 50][
                                                                                               x // 50 + 1:]
         elif par[1][1] == 'right' and (
-            old_data[y // 50][x // 50]) != 'D' and (old_data[y // 50][x // 50]) != 'Z' and (
-            old_data[y // 50][x // 50]) != 'M':
+                old_data[y // 50][x // 50]) != 'D' and (old_data[y // 50][x // 50]) != 'Z' and (
+                old_data[y // 50][x // 50]) != 'M':
             old_data[y // 50] = old_data[y // 50][:x // 50] + B[old_data[y // 50][x // 50]] + old_data[y // 50][
                                                                                               x // 50 + 1:]
         new_data = open('map_game', 'w')
@@ -117,21 +118,6 @@ class Board:
                 pygame.draw.rect(screen, 'white', (
                     self.left + self.cell_size * col, self.top + self.cell_size * row, self.cell_size, self.cell_size),
                                  1)
-
-        elements = {'.': pygame.image.load('foto/img1.png'),
-                    '@': pygame.image.load('foto/right_plpng.png'),
-                    '#': pygame.image.load('foto/left_pl.png'),
-                    'w': pygame.image.load('foto/wood_neitral.png'),
-                    'd': pygame.image.load('foto/wood_left.png'),
-                    'D': pygame.image.load('foto/wood_right.png'),
-                    'i': pygame.image.load('foto/iron_n.png'),
-                    'm': pygame.image.load('foto/iron_left.png'),
-                    'M': pygame.image.load('foto/iron_right.png'),
-                    'g': pygame.image.load('foto/gold_n.png'),
-                    'z': pygame.image.load('foto/gold_l.png'),
-                    'Z': pygame.image.load('foto/gold_r.png'),
-                    'U': pygame.image.load('foto/u_l.png'),
-                    'u': pygame.image.load('foto/u_r.png')}
         for i in range(len(data)):
             for j in range(len(data[i]) - 1):
                 screen.blit(elements[data[i][j]], (j * 50, i * 50))
