@@ -106,7 +106,6 @@ class Board:
                                  1)
         for i in range(len(data)):
             for j in range(len(data[i]) - 1):
-                print(data[i][j])
                 screen.blit(elements[data[i][j]], (j * 50, i * 50))
 
     def get_click(self, mouse_pos, type_object, n):
