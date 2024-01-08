@@ -3,8 +3,8 @@ from Board_in_game import *
 
 import os
 
-x = 20
-y = 10
+x = 220
+y = 20
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y)
 pygame.init()
 pygame.display.set_caption('KING_FIGHT')
