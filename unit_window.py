@@ -1,8 +1,8 @@
-import mouse
+
 import pygame
 from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog
-from pynput import mouse
+
 
 def go(sc):
     x, y = pygame.mouse.get_pos()

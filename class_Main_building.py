@@ -1,4 +1,3 @@
-
 from class_all_objects import Object
 import pygame
 

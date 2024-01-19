@@ -144,7 +144,7 @@ class MyWidget_1(QDialog):
 
     def control(self, pos, par, screen_2, n):
         self.close()
-        print(par)
+        # print(par)
         return control(pos, par, screen_2, n)
 
     def fight(self, pos, par, screen_2, n):
@@ -173,32 +173,47 @@ class win_build(QDialog):
         old_data = (open('map_game', 'r')).readlines()
         f = old_data[pos[1]].split()[pos[0]]
         k = (f[f.index("d',") + 3:f.index(')')])
-        k_1 = k.replace(f[f.index("d',") + 3:f.index(')')], str(int(f[f.index("d',") + 3:f.index(')')]) - 5))
-        print(k_1)
-        if par[1][1] == 'left' and int(k) > 4:  # тут
+        k_1 = k.replace(f[f.index("d',") + 3:f.index(')')], str(int(f[f.index("d',") + 3:f.index(')')])))
+        if par[1][1] == 'left' and int(k) >= 5:  # тут
             old_data[0] = old_data[0].replace('.', 'U[10,5]', 1)  # тут
-        else:
+            f = old_data[0].split()[0]
+            f = f.replace(str(int(k_1)), str(int(k_1) - 5), 1)
+            old_data[0] = old_data[0].replace(str(old_data[0].split()[0]), f, 1)
+        elif par[1][1] == 'right' and int(k) >= 5:
             old_data[19] = old_data[19][::-1].replace('.', 'u', 1)[::-1]  # тут
-            old_data[19] = old_data[19].replace('u', 'u[10,5]')
+            old_data[19] = old_data[19].replace('u', 'u[10,5]', 1)
+            f = old_data[19].split()[29]
+            k = (f[f.index("d',") + 3:f.index(')')])
+            k_1 = k.replace(f[f.index("d',") + 3:f.index(')')], str(int(f[f.index("d',") + 3:f.index(')')])))
+            f = f.replace("d'," + str(int(k_1)), "d'," + str(int(k_1) - 5), 1)
+            old_data[19] = old_data[19].replace(str(old_data[19].split()[29]), f, 1)
         new_data = open('map_game', 'w')
         for elem in old_data:
             new_data.write(elem)
-        print(old_data[pos[1]].split()[pos[0]])
         return par
 
-
-def create_for_iron_and_wood(self, pos, par, screen):
-    self.close()
-    old_data = (open('map_game', 'r')).readlines()
-    if par[1][1] == 'left':  # тут
-        old_data[0] = old_data[0].replace('.', 'U[10,5]', 1)  # тут
-    else:
-        old_data[19] = old_data[19][::-1].replace('.', 'u', 1)[::-1]  # тут
-        old_data[19] = old_data[19].replace('u', 'u[10,5]')
-    new_data = open('map_game', 'w')
-    for elem in old_data:
-        new_data.write(elem)
-    self.close()
+    def create_for_iron_and_wood(self, pos, par, screen):
+        self.close()
+        old_data = (open('map_game', 'r')).readlines()
+        f = old_data[pos[1]].split()[pos[0]]
+        w_r, i_r = (f[f.index("od',"):f.index(("),('i"))], f[f.index("n',"):f.index(")]")])
+        i_w_r, i_i_r = int(w_r[4:]), int(i_r[3:])
+        f = f.replace(w_r, "od'," + str(i_w_r - 5))
+        f = f.replace(i_r, "n'," + str(i_i_r - 5))
+        f_1 = old_data[pos[1]].split()
+        f_1[pos[0]] = f
+        f_1 = ' '.join(f_1)
+        if i_w_r >= 5 and i_i_r >= 5:
+            old_data[pos[1]] = f_1 + '\n'
+            if par[1][1] == 'left':  # тут
+                old_data[0] = old_data[0].replace('.', 'U[10,5]', 1)  # тут
+            else:
+                old_data[19] = old_data[19][::-1].replace('.', 'u', 1)[::-1]  # тут
+                old_data[19] = old_data[19].replace('u', 'u[10,5]', 1)
+        new_data = open('map_game', 'w')
+        for elem in old_data:
+            new_data.write(elem)
+        self.close()
 
 
 def create_win_build(tit, ui, par, pos, screen, n):
@@ -318,4 +333,5 @@ class Board:
         return col, row, type_object, self.parametrs
 
     def on_click(self, cell_coords):
-        print(cell_coords)
+        pass
+        # print(cell_coords)
